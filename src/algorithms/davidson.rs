@@ -19,9 +19,9 @@ Available correction methods are:
 */
 
 use super::{DavidsonCorrection, SpectrumTarget};
+use crate::MGS;
 use crate::matrix_operations::MatrixOperations;
 use crate::utils;
-use crate::MGS;
 use nalgebra::linalg::SymmetricEigen;
 use nalgebra::{DMatrix, DVector, Dynamic};
 use std::error;
@@ -245,7 +245,7 @@ impl Davidson {
             let mut rs = xs.clone();
 
             // update the matrix according to the spectrumtarget
-            sort_diagonal(&mut rs, &conf);
+            sort_diagonal(&mut rs, conf);
             let mut mtx = DMatrix::<f64>::zeros(diag.nrows(), conf.max_search_space);
             for i in 0..conf.max_search_space {
                 let index = rs
@@ -346,7 +346,7 @@ fn update_subspace(basis: &mut DMatrix<f64>, vectors: DMatrix<f64>, range: (usiz
     slice.copy_from(&vectors.columns(0, end - start));
 }
 
-fn sort_diagonal(rs: &mut Vec<f64>, conf: &Config) {
+fn sort_diagonal(rs: &mut [f64], conf: &Config) {
     match conf.spectrum_target {
         SpectrumTarget::Lowest => utils::sort_vector(rs, true),
         SpectrumTarget::Highest => utils::sort_vector(rs, false),

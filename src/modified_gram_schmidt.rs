@@ -30,7 +30,7 @@ impl MGS {
 
     // Project
     fn project(v1: &DVectorSlice<f64>, v2: &DVectorSlice<f64>) -> DVector<f64> {
-        let magnitud = v1.dot(&v2) / v1.dot(&v1);
+        let magnitud = v1.dot(v2) / v1.dot(v1);
         v1 * magnitud
     }
 }

@@ -12,7 +12,7 @@ use nalgebra::{DMatrix, DMatrixSlice, DVector, DVectorSlice};
 use std::clone::Clone;
 
 /// Trait containing the matrix free operations
-pub trait MatrixOperations: Clone  {
+pub trait MatrixOperations: Clone {
     /// Matrix vector multiplication
     fn matrix_vector_prod(&self, vs: DVectorSlice<f64>) -> DVector<f64>;
     /// Matrix matrix multiplication
@@ -48,5 +48,3 @@ impl MatrixOperations for DMatrix<f64> {
         self.nrows()
     }
 }
-
-

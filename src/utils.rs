@@ -7,8 +7,8 @@
 use nalgebra as na;
 
 use approx::relative_eq;
-use na::linalg::SymmetricEigen;
 use na::Dynamic;
+use na::linalg::SymmetricEigen;
 use na::{DMatrix, DVector};
 
 /// Generate a random highly diagonal symmetric matrix
@@ -54,7 +54,12 @@ pub fn sort_eigenpairs(
         .enumerate()
         .map(|(idx, &x)| (x, idx))
         .collect();
-    sort_vector(&mut vs, ascending);
+
+    if ascending {
+        vs.sort_unstable_by(|a, b| f64::total_cmp(&a.0, &b.0));
+    } else {
+        vs.sort_unstable_by(|a, b| f64::total_cmp(&b.0, &a.0));
+    }
 
     // Sorted eigenvalues
     let eigenvalues = DVector::<f64>::from_iterator(vs.len(), vs.iter().map(|t| t.0));
@@ -76,16 +81,16 @@ pub fn sort_eigenpairs(
     }
 }
 
-pub fn sort_vector<T: PartialOrd>(vs: &mut Vec<T>, ascending: bool) {
+pub fn sort_vector(vs: &mut [f64], ascending: bool) {
     if ascending {
-        vs.sort_unstable_by(|a, b| a.partial_cmp(b).unwrap());
+        vs.sort_unstable_by(f64::total_cmp);
     } else {
-        vs.sort_unstable_by(|a, b| b.partial_cmp(a).unwrap());
+        vs.sort_unstable_by(|a, b| f64::total_cmp(b, a));
     }
 }
 
 pub fn test_eigenpairs(
-    reference: &na::linalg::SymmetricEigen<f64, na::Dynamic>,
+    reference: &na::linalg::SymmetricEigen<f64, Dynamic>,
     eigenpair: (na::DVector<f64>, na::DMatrix<f64>),
     number: usize,
 ) {
